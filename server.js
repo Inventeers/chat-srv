@@ -1,5 +1,5 @@
 var https = require('https')
-  , sio    = require('socket.io')
+  , sio   = require('socket.io')
   , _     = require('lodash')
   , users = {}
   , port  = 8081
