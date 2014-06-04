@@ -1,5 +1,5 @@
 var https = require('https')
-  , io    = require('socket.io')
+  , sio    = require('socket.io')
   , _     = require('lodash')
   , users = {}
   , port  = 8081
@@ -11,11 +11,11 @@ var https = require('https')
 
 // Initialize secure server
 var app = https.createServer(opts);
-io = io.listen(app);
+io = sio.listen(app);
 app.listen(port);
 
 // Initialize unsecure, stand-alone server
-// io = io(port);
+// io = sio(port);
 
 io.on('connection', function(socket) {
 	socket.on('logon', function(username) {
