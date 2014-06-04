@@ -1,6 +1,21 @@
-var io = require('socket.io')(8081)
-  , _ = require('lodash')
-  , users = {};
+var https = require('https')
+  , io    = require('socket.io')
+  , _     = require('lodash')
+  , users = {}
+  , port  = 8081
+  , opts  = {
+	  	key  : fs.readFileSync('path/to/key.key'),
+	  	cert : fs.readFileSync('path/to/cert.crt'),
+	  	ca   : fs.readFileSync('path/to/ca.crt')
+	  };
+
+// Initialize secure server
+var app = https.createServer(opts);
+io = io.listen(app);
+app.listen(port);
+
+// Initialize unsecure, stand-alone server
+// io = io(port);
 
 io.on('connection', function(socket) {
 	socket.on('logon', function(username) {
@@ -10,7 +25,7 @@ io.on('connection', function(socket) {
 
 		console.log(socket.username + ' connected');
 
-		io.emit('users', _.keys(users));
+		io.sockets.emit('users', _.keys(users));
 	});
 
 	socket.on('send', function(user, msg) {
@@ -29,11 +44,7 @@ io.on('connection', function(socket) {
 
 			console.log(socket.username + ' disconnected');
 			
-			// io.sockets.emit didnt work, apparently?
 			io.sockets.emit('users', _.keys(users));
-			/*_.each(users, function(sock) {
-				sock.emit('users', _.keys(users));
-			});*/
 		}
 	});
 });
